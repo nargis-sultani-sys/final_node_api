@@ -29,8 +29,18 @@ const getAllStates = async (req, res) => {
 };
 
 const getStateData = async (req, res) => {
+  let states = data.states;
   const stateCode = req.params.state;
   console.log("code param: " + stateCode);
+
+  const codes = [];
+  for (var i=0; i < states.length; i++) {
+    codes.push(states[i].code);
+  }
+  console.log(codes);
+  if (!codes.includes(stateCode.toUpperCase())){
+    return res.status(400).json({ 'message': 'Invalid state abbreviation parameter' });
+  }
   /*if (stateCode.length != 2){
     return res.status(404).json({ error: 'Invalid state abbreviation parameter' });
   }*/
@@ -40,7 +50,7 @@ const getStateData = async (req, res) => {
   // If state is not found, return a 404 response
   if (!state) {
     //return res.status(404).json({ error: 'State not found' });
-    return res.status(404).json({ error: 'Invalid state abbreviation parameter' });
+    return res.status(400).json({ 'message': 'Invalid state abbreviation parameter' });
 
   }
 
@@ -67,8 +77,7 @@ const getFunfacts = (req, res) => {
   // If state is not found, return a 404 response
   if (!state) {
     //return res.status(404).json({ error: 'State not found' });
-    return res.status(404).json({ error: 'Invalid state abbreviation parameter' });
-  }
+    return res.status(400).json({ 'message': 'Invalid state abbreviation parameter' });
 
 
 
@@ -94,7 +103,7 @@ const getCapital = (req, res) => {
   // If state is not found, return a 404 response
   if (!state) {
     //return res.status(404).json({ error: 'State not found' });
-    return res.status(404).json({ error: 'Invalid state abbreviation parameter' });
+    return res.status(400).json({ 'message': 'Invalid state abbreviation parameter' });
   }
 
   // Return the state data
@@ -114,7 +123,7 @@ const getNickname = (req, res) => {
   // If state is not found, return a 404 response
   if (!state) {
     //return res.status(404).json({ error: 'State not found' });
-    return res.status(404).json({ error: 'Invalid state abbreviation parameter' });
+    return res.status(400).json({ 'message': 'Invalid state abbreviation parameter' });
   }
 
   // Return the state data
@@ -135,7 +144,7 @@ const getPopulation = (req, res) => {
   // If state is not found, return a 404 response
   if (!state) {
     //return res.status(404).json({ error: 'State not found' });
-    return res.status(404).json({ error: 'Invalid state abbreviation parameter' });
+    return res.status(400).json({ 'message': 'Invalid state abbreviation parameter' });
   }
 
   // Return the state data
@@ -155,8 +164,7 @@ const getAdmission = (req, res) => {
   // If state is not found, return a 404 response
   if (!state) {
     //return res.status(404).json({ error: 'State not found' });
-    return res.status(404).json({ error: 'Invalid state abbreviation parameter' });
-  }
+    return res.status(400).json({ 'message': 'Invalid state abbreviation parameter' });
 
   // Return the state data
   return res.send({'state': state.state, 'admitted': state.admission_date});
