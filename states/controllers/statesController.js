@@ -74,13 +74,13 @@ const getFunfacts = async (req, res) => {
     return res.status(400).json({ 'message': 'Invalid state abbreviation parameter' });
   }
 
-  const funfactTable = await dbState.findOne({ code: stateCode }).exec();
+  const funfactTable = await dbState.findOne({ code: stateCode.toUpperCase() }).exec();
   console.log(funfactTable);
   if (!funfactTable) {
     return res.status(404).json({ 'message': 'No Fun Facts found for ' + state.state });
   }
 
-  return res.json(funfactTable.funfacts);
+  return res.json({'funfacts': funfactTable.funfacts});
 }
 
 const getCapital = (req, res) => {
@@ -165,9 +165,14 @@ const getAdmission = (req, res) => {
 }
 
 const createFunfact = (req, res) => {
-  if (!req.body) {
+  if (!req.body.funfact) {
     return res.status(400).send({
-      message: "Data to update can not be empty!"
+      message: "State fun facts value required"
+    });
+  }
+  if (!req.body.funfact instanceof Array){
+    return res.status(400).send({
+      message: "State fun facts value must be an array"
     });
   }
 
@@ -200,11 +205,18 @@ const createFunfact = (req, res) => {
 };
 
 const patchFunfact = (req, res) => {
-  if (!req.body) {
+  if (!req.body.index) {
     return res.status(400).send({
-      message: "Data to patch can not be empty!"
+      message: "State fun fact index value required"
     });
   }
+
+  if (!req.body.funfact) {
+    return res.status(400).send({
+      message: "State fun fact value required"
+    });
+  }
+
 
   const stateCode = req.params.state;
   const index = req.body.index -1;
@@ -239,7 +251,7 @@ const patchFunfact = (req, res) => {
 const deleteFunfact = async (req, res) => {
   
 
-  if (!req?.body?.index) return res.status(400).json({ 'message': 'Funfact index required.' });
+  if (!req?.body?.index) return res.status(400).json({ 'message': 'State fun fact index value required' });
 
   const stateCode = req.params.state;
 
