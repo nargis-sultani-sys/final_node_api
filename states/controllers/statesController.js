@@ -19,9 +19,10 @@ const getAllStates = async (req, res) => {
   for (var i=0; i < states.length; i++) {
     const funfactTable = await dbState.findOne({ code: states[i].code }).exec();
     if (funfactTable) {
+      console.log("funfact table: " + funfactTable);
       states[i]["funfacts"] = funfactTable.funfacts;
     }
-    console.log(states[i])
+   
   }
 
   
@@ -41,9 +42,6 @@ const getStateData = async (req, res) => {
   if (!codes.includes(stateCode.toUpperCase())){
     return res.status(400).json({ 'message': 'Invalid state abbreviation parameter' });
   }
-  /*if (stateCode.length != 2){
-    return res.status(404).json({ error: 'Invalid state abbreviation parameter' });
-  }*/
 
   // Find the state with the given code
   const state = data.states.find(s => s.code.toLowerCase() === stateCode.toLowerCase());
@@ -55,6 +53,7 @@ const getStateData = async (req, res) => {
   }
 
   const funfactTable = await dbState.findOne({ code: stateCode }).exec();
+  console.log("funfact table: " + funfactTable);
   if (funfactTable) {
     state["funfacts"] = funfactTable.funfacts;
   }
@@ -63,31 +62,25 @@ const getStateData = async (req, res) => {
   return res.json(state);
 };
 
-const getFunfacts = (req, res) => {
+const getFunfacts = async (req, res) => {
     
   const stateCode = req.params.state;
-  /*if (stateCode.length != 2){
-    return res.status(404).json({ error: 'Invalid state abbreviation parameter' });
-  }*/
-
-
-  // Find the state with the given code
+  
   const state = data.states.find(s => s.code.toLowerCase() === stateCode.toLowerCase());
    
   // If state is not found, return a 404 response
   if (!state) {
     //return res.status(404).json({ error: 'State not found' });
     return res.status(400).json({ 'message': 'Invalid state abbreviation parameter' });
+  }
 
+  const funfactTable = await dbState.findOne({ code: stateCode }).exec();
+  console.log(funfactTable);
+  if (!funfactTable) {
+    return res.status(404).json({ 'message': 'No Fun Facts found for ' + state.state });
+  }
 
-
-  dbState.findOne({ code: stateCode })
-  .then(s => {
-    return res.json(s.funfacts);
-  })
-  .catch(err => {
-    return res.status(404).json({ error: 'No Fun Facts found for Georgia' });
-  });
+  return res.json(funfactTable.funfacts);
 }
 
 const getCapital = (req, res) => {
@@ -165,6 +158,7 @@ const getAdmission = (req, res) => {
   if (!state) {
     //return res.status(404).json({ error: 'State not found' });
     return res.status(400).json({ 'message': 'Invalid state abbreviation parameter' });
+  }
 
   // Return the state data
   return res.send({'state': state.state, 'admitted': state.admission_date});
