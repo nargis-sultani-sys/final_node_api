@@ -7,7 +7,7 @@ const data = {
 
 const dbState = require('../models/state');
 
-const getAllStates = (req, res) => {
+const getAllStates = async (req, res) => {
   let states = data.states;
   
   if (req.query.contig === 'true') {
@@ -15,6 +15,15 @@ const getAllStates = (req, res) => {
   } else if (req.query.contig === 'false') {
     states = states.filter(state => state.code === 'AK' || state.code === 'HI');
   }
+
+  for (var i=0; i < states.length; i++) {
+    const funfactTable = await dbState.findOne({ code: states[i].code }).exec();
+    if (funfactTable) {
+      states[i]["funfacts"] = funfactTable.funfacts;
+    }
+    console.log(numbers[i])
+  }
+
   
   res.json(states);
 };
@@ -22,9 +31,12 @@ const getAllStates = (req, res) => {
 const getStateData = async (req, res) => {
   const stateCode = req.params.state;
   console.log("code param: " + stateCode);
+  if (stateCode.length != 2){
+    return res.status(404).json({ error: 'Invalid state abbreviation parameter' });
+  }
 
   // Find the state with the given code
-  const state = data.states.find(s => s.code === stateCode);
+  const state = data.states.find(s => s.code.toLowerCase === stateCode.toLowerCase);
   // If state is not found, return a 404 response
   if (!state) {
     return res.status(404).json({ error: 'State not found' });
@@ -42,33 +54,39 @@ const getStateData = async (req, res) => {
 const getFunfacts = (req, res) => {
     
   const stateCode = req.params.state;
+  if (stateCode.length != 2){
+    return res.status(404).json({ error: 'Invalid state abbreviation parameter' });
+  }
+
 
   // Find the state with the given code
-  const state = data.states.find(s => s.code === stateCode);
+  const state = data.states.find(s => s.code.toLowerCase === stateCode.toLowerCase);
    
   // If state is not found, return a 404 response
   if (!state) {
     return res.status(404).json({ error: 'State not found' });
   }
 
+
+
   dbState.findOne({ code: stateCode })
   .then(s => {
-    res.send(s.funfacts);
+    return res.json(s.funfacts);
   })
   .catch(err => {
-    res.status(500).send({
-      message:
-        err.message || "Some error occurred while retrieving tutorials."
-    });
+    return res.status(404).json({ error: 'No Fun Facts found for Georgia' });
   });
 }
 
 const getCapital = (req, res) => {
     
   const stateCode = req.params.state;
+  if (stateCode.length != 2){
+    return res.status(404).json({ error: 'Invalid state abbreviation parameter' });
+  }
 
   // Find the state with the given code
-  const state = data.states.find(s => s.code === stateCode);
+  const state = data.states.find(s => s.code.toLowerCase === stateCode.toLowerCase);
 
   // If state is not found, return a 404 response
   if (!state) {
@@ -82,6 +100,9 @@ const getCapital = (req, res) => {
 const getNickname = (req, res) => {
     
   const stateCode = req.params.state;
+  if (stateCode.length != 2){
+    return res.status(404).json({ error: 'Invalid state abbreviation parameter' });
+  }
 
   // Find the state with the given code
   const state = data.states.find(s => s.code === stateCode);
@@ -99,8 +120,12 @@ const getPopulation = (req, res) => {
     
   const stateCode = req.params.state;
 
+  if (stateCode.length != 2){
+    return res.status(404).json({ error: 'Invalid state abbreviation parameter' });
+  }
+
   // Find the state with the given code
-  const state = data.states.find(s => s.code === stateCode);
+  const state = data.states.find(s => s.code.toLowerCase === stateCode.toLowerCase);
 
   // If state is not found, return a 404 response
   if (!state) {
@@ -114,9 +139,12 @@ const getPopulation = (req, res) => {
 const getAdmission = (req, res) => {
     
   const stateCode = req.params.state;
+  if (stateCode.length != 2){
+    return res.status(404).json({ error: 'Invalid state abbreviation parameter' });
+  }
 
   // Find the state with the given code
-  const state = data.states.find(s => s.code === stateCode);
+  const state = data.states.find(s => s.code.toLowerCase === stateCode.toLowerCase);
 
   // If state is not found, return a 404 response
   if (!state) {
