@@ -21,7 +21,7 @@ const getAllStates = async (req, res) => {
     if (funfactTable) {
       states[i]["funfacts"] = funfactTable.funfacts;
     }
-    console.log(numbers[i])
+    console.log(states[i])
   }
 
   
@@ -36,7 +36,7 @@ const getStateData = async (req, res) => {
   }
 
   // Find the state with the given code
-  const state = data.states.find(s => s.code.toLowerCase === stateCode.toLowerCase);
+  const state = data.states.find(s => s.code.toLowerCase() === stateCode.toLowerCase());
   // If state is not found, return a 404 response
   if (!state) {
     return res.status(404).json({ error: 'State not found' });
@@ -60,7 +60,7 @@ const getFunfacts = (req, res) => {
 
 
   // Find the state with the given code
-  const state = data.states.find(s => s.code.toLowerCase === stateCode.toLowerCase);
+  const state = data.states.find(s => s.code.toLowerCase() === stateCode.toLowerCase());
    
   // If state is not found, return a 404 response
   if (!state) {
@@ -86,7 +86,7 @@ const getCapital = (req, res) => {
   }
 
   // Find the state with the given code
-  const state = data.states.find(s => s.code.toLowerCase === stateCode.toLowerCase);
+  const state = data.states.find(s => s.code.toLowerCase() === stateCode.toLowerCase());
 
   // If state is not found, return a 404 response
   if (!state) {
@@ -105,7 +105,7 @@ const getNickname = (req, res) => {
   }
 
   // Find the state with the given code
-  const state = data.states.find(s => s.code === stateCode);
+  const state = data.states.find(s => s.code.toLowerCase() === stateCode.toLowerCase());
 
   // If state is not found, return a 404 response
   if (!state) {
@@ -125,7 +125,7 @@ const getPopulation = (req, res) => {
   }
 
   // Find the state with the given code
-  const state = data.states.find(s => s.code.toLowerCase === stateCode.toLowerCase);
+  const state = data.states.find(s => s.code.toLowerCase() === stateCode.toLowerCase());
 
   // If state is not found, return a 404 response
   if (!state) {
@@ -144,7 +144,7 @@ const getAdmission = (req, res) => {
   }
 
   // Find the state with the given code
-  const state = data.states.find(s => s.code.toLowerCase === stateCode.toLowerCase);
+  const state = data.states.find(s => s.code.toLowerCase() === stateCode.toLowerCase());
 
   // If state is not found, return a 404 response
   if (!state) {
